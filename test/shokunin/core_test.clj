@@ -21,6 +21,8 @@
   (let [initial-solutions (cut/permute ["a" "b" "c" "d" "e"])]
     (testing "can find solutions with named devs at certain positions"
       (is (= 24 (count (cut/find initial-solutions "a" 1)))))
+    (testing "can find solutions with named devs not at certain positions"
+      (is (= 96 (count (cut/find initial-solutions "b" 1 :exclusive)))))
     (testing "finds no solutions for unknown devs"
       (is (= 0 (count (cut/find initial-solutions "f" 1))))
       (is (= 0 (count (cut/find initial-solutions "A" 2))))
