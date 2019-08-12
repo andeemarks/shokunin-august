@@ -1,6 +1,6 @@
-(ns shokunin.core (:gen-class))
+(ns shokunin.core (:gen-class)
+  (:require [clojure.math.combinatorics :as combo]))
 
-(defn -main
-  "I don't do a whole lot."
-  [& args]
-  (println "Hello, World!"))
+(defn permute
+  [devs]
+  (combo/permutations devs))
