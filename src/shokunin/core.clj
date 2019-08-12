@@ -5,11 +5,21 @@
   [devs]
   (combo/permutations devs))
 
+(defn- valid-position?
+  [position solution]
+  (and 
+    (> position 0) 
+    (<= position (count solution))))
+
+(defn- dev-at-position
+  [solution position]
+  (nth solution (+ position 1)))
+
 (defn find
   [devs dev position]
   (filter 
     (fn [solution]
-      (if (or (<= position 0) (> position (count solution)))
-        false
-        (= dev (nth solution (+ position 1))))) 
+      (if (valid-position? position solution)
+        (= dev (dev-at-position solution position))
+        false))
     devs))
