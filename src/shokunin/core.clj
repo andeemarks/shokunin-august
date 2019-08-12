@@ -18,8 +18,7 @@
 (defn find
   [devs dev position]
   (filter 
-    (fn [solution]
-      (if (valid-position? position solution)
-        (= dev (dev-at-position solution position))
-        false))
+    #(if (valid-position? position %)
+      (= dev (dev-at-position % position))
+      false)
     devs))
