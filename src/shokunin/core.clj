@@ -19,8 +19,8 @@
   [solution position dev]
   (= dev (dev-at-position solution position)))
 
-(defmulti find (fn [devs dev position & modifier] (or modifier '(:inclusive))))
-(defmethod find '(:inclusive)
+(defmulti find (fn [devs dev position & modifier] (or (first modifier) :inclusive)))
+(defmethod find :inclusive
   [devs dev position & modifier]
   (filter 
     #(if (valid-position? position %)
@@ -28,7 +28,7 @@
       false)
     devs))
   
-(defmethod find '(:exclusive)
+(defmethod find :exclusive
   [devs dev position & modifier]
   (filter 
     #(if (valid-position? position %)
