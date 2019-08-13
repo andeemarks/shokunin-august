@@ -33,3 +33,16 @@
       (is (= 0 (count (cut/find initial-solutions "a" 0))))
       (is (= 0 (count (cut/find initial-solutions "b" 6)))) )
   ))
+
+; Jessie is not the best developer
+; (> 1 (:pos "Jessie"))
+; Evan is not the worst developer
+; (< 5 (:pos "Evan"))
+; John is not the best developer or the worst developer
+; (and (> 1 (:pos "John")) (< 5 (:pos "John")))
+; Sarah is a better developer than Evan
+; (< (:pos "Sarah") (:pos "Evan"))
+; Matt is not directly behind or ahead of John
+; (> 1 (abs (- (:pos "Matt") (:pos "Evan"))))
+; John is not directly behind or ahead of Evan
+; (> 1 (abs (- (:pos "John") (:pos "Evan"))))
