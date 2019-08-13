@@ -20,6 +20,20 @@
   [solution position dev]
   (= dev (dev-at-position solution position)))
 
+(defn pos
+  "Return a sequence of all the positions of dev in the solutions sequence"
+  [dev solutions]
+  (let [dev-positions
+    (flatten 
+      (map 
+        (fn [solution] (filter #(= dev (:dev %)) solution))
+        solutions))]
+    (distinct (map #(select-keys % [:pos]) dev-positions))))
+
+(defn find2 
+  [devs predicate]
+  (filter (eval predicate) devs))
+
 (defmulti find (fn [devs dev position & modifier] (or (first modifier) :inclusive)))
 (defmethod find :inclusive
   [devs dev position & modifier]

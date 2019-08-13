@@ -19,7 +19,8 @@
       (is (= 24 (count (cut/find initial-solutions "a" 1))))
       (is (= 24 (count (cut/find initial-solutions "a" 1 :inclusive)))))
     (testing "can find solutions with named devs not at certain positions"
-      (is (= 96 (count (cut/find initial-solutions "b" 1 :exclusive)))))
+      ; (is (= 96 (count (cut/find2 initial-solutions '(> 1 (pos "b"))))))
+      )
     (testing "finds no solutions for unknown devs"
       (is (= 0 (count (cut/find initial-solutions "f" 1))))
       (is (= 0 (count (cut/find initial-solutions "A" 2))))
@@ -29,6 +30,13 @@
       (is (= 0 (count (cut/find initial-solutions "a" 0))))
       (is (= 0 (count (cut/find initial-solutions "b" 6)))) )
   ))
+
+(deftest finding-developer-positions
+  (testing "can find position of existing developer"
+    (is (= '({:pos 1} {:pos 2} {:pos 3}) (sort-by :pos (cut/pos "b" (cut/permute ["a" "b" "c"])))))
+    (is (= '({:pos 1} {:pos 2}) (sort-by :pos (cut/pos "b" (cut/permute ["a" "b"]))))))
+  (testing "cannot find position of non-existing developer"
+    (is (= '() (cut/pos "c" (cut/permute ["a" "b"]))))))
 
 ; Jessie is not the best developer
 ; (> 1 (pos "Jessie"))
