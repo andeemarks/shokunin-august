@@ -4,13 +4,9 @@
 
 (deftest generating-permutations-of-devs
   (testing "1 developer produces one result"
-    (is (= [["a"]] (cut/permute ["a"]))))
+    (is (= [[{:dev "a" :pos 1}]] (cut/permute ["a"]))))
   (testing "2 developers produces 2 results"
-    (is (= [["a" "b"]["b" "a"]] (cut/permute ["a" "b"]))))
-  (testing "3 developers produces 6 results"
-    (is (= [["a" "b" "c"]["a" "c" "b"]
-            ["b" "a" "c"]["b" "c" "a"]
-            ["c" "a" "b"]["c" "b" "a"]] (cut/permute ["a" "b" "c"]))))
+    (is (= [[{:dev "a" :pos 1} {:dev "b" :pos 2}][{:dev "b" :pos 1}{:dev "a" :pos 2}]] (cut/permute ["a" "b"]))))
   (testing "4 developers produces 24 results"
     (is (= 24 (count (cut/permute ["a" "b" "c" "d"])))))
   (testing "permutations are not dependent on order"
@@ -35,14 +31,14 @@
   ))
 
 ; Jessie is not the best developer
-; (> 1 (:pos "Jessie"))
+; (> 1 (pos "Jessie"))
 ; Evan is not the worst developer
-; (< 5 (:pos "Evan"))
+; (< 5 (pos "Evan"))
 ; John is not the best developer or the worst developer
-; (and (> 1 (:pos "John")) (< 5 (:pos "John")))
+; (and (> 1 (pos "John")) (< 5 (pos "John")))
 ; Sarah is a better developer than Evan
-; (< (:pos "Sarah") (:pos "Evan"))
+; (< (pos "Sarah") (pos "Evan"))
 ; Matt is not directly behind or ahead of John
-; (> 1 (abs (- (:pos "Matt") (:pos "Evan"))))
+; (> 1 (abs (- (pos "Matt") (pos "Evan"))))
 ; John is not directly behind or ahead of Evan
-; (> 1 (abs (- (:pos "John") (:pos "Evan"))))
+; (> 1 (abs (- (pos "John") (pos "Evan"))))

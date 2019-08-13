@@ -3,7 +3,8 @@
 
 (defn permute
   [devs]
-  (combo/permutations devs))
+  (map (fn [item] (map-indexed (fn [index subitem] {:dev subitem :pos (+ 1 index)}) item)) (combo/permutations devs))
+  )
 
 (defn- valid-position?
   [position solution]
@@ -13,7 +14,7 @@
 
 (defn- dev-at-position
   [solution position]
-  (nth solution (+ position 1)))
+  (:dev (nth solution (+ position 1))))
 
 (defn- is-dev-at-position?
   [solution position dev]
