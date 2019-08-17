@@ -46,5 +46,7 @@
         (insert 
                 (->DevRank "a" 2)
                 (->DevRank "c" 3)
+                (->DevRank "d" 5)
+                (->DevRank "e" 4)
                 (->DevRank "b" 1))
         (fire-rules)))
