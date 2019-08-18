@@ -1,52 +1,48 @@
 (ns shokunin.rules
   (:require [clara.rules :refer :all]))
 
-(defrecord SupportRequest [client level])
+(defrecord DevRankList [dev1 dev2 dev3 dev4 dev5])
 
-(defrecord ClientRepresentative [name client])
+(defn rank-for
+    [dev-rank-list dev]
+    (cond 
+        (= (:dev1 dev-rank-list) dev) 1
+        (= (:dev2 dev-rank-list) dev) 2
+        (= (:dev3 dev-rank-list) dev) 3
+        (= (:dev4 dev-rank-list) dev) 4
+        (= (:dev5 dev-rank-list) dev) 5
+        )
+    )
 
-(defrecord DevRank [developer rank])
-
-(defrule is-not-the-best-developer
-    [DevRank (= ?dev developer) (not (= 1 rank))]
-    =>
-    (println ?dev "is not the best developer"))
-
-(defrule is-not-the-worst-developer
-    [DevRank (= ?dev developer) (not (= 5 rank))]
-    =>
-    (println ?dev "is not the worst developer"))
-
-(defrule is-a-better-developer-than
-    [DevRank (= ?dev1 developer) (= ?rank1 rank)]
-    [DevRank (= ?dev2 developer) (= ?rank2 rank)]
-    [:test (< ?rank1 ?rank2)]
-    =>
-    (println ?dev1 "is a better developer than" ?dev2))
-
-(defrule is-neither-best-nor-worst
-    [:and   [DevRank (= ?dev developer) (> 5 rank)]
-            [DevRank (= ?dev developer) (< 1 rank)]]
-    =>
-    (println ?dev "is neither the best or worst developer"))
-
-(defrule is-not-immediately-better-or-worst
-    [DevRank (= ?dev1 developer) (= ?rank1 rank)]
-    [DevRank (= ?dev2 developer) (= ?rank2 rank)]
-    (println (- ?rank1 ?rank2))
-    [:test (and 
-                (not (== ?rank1 ?rank2)) 
-                (not (< 2 (Math/abs (- ?rank1 ?rank2)))))]
-    =>
-    (println ?dev1 "is not immediately better or worse than" ?dev2))
+(defrule all-the-rules
+    [?match <- DevRankList (not (= dev1 "Jessie"))]
+    [?match <- DevRankList (not (= dev5 "Evan"))]
+    [?match <- DevRankList (not (= dev5 "John"))]
+    [?match <- DevRankList (not (= dev5 "John"))]
+    [?match <- DevRankList (= ?sarah_rank (rank-for ?match "Sarah"))]
+    [?match <- DevRankList (= ?evan_rank (rank-for ?match "Evan"))]
+    [?match <- DevRankList (= ?john_rank (rank-for ?match "John"))]
+    [?match <- DevRankList (= ?matt_rank (rank-for ?match "Matt"))]
+    [:test (< ?sarah_rank ?evan_rank)]
+    [:test (< 2 (Math/abs (- ?matt_rank ?john_rank)))]
+    [:test (>= 2 (Math/abs (- ?evan_rank ?john_rank)))]
+    => (println "Found matching permutation in " ?match))
 
 (defn -main
     [& args]
+
+    ; Jessie is not the best developer
+    ; Evan is not the worst developer
+    ; John is not the best developer or the worst developer
+    ; Sarah is a better developer than Evan
+    ; Matt is not directly below or above John as a developer
+    ; John is not directly below or above Evan as a developer        
+
     (-> (mk-session 'shokunin.rules)
         (insert 
-                (->DevRank "a" 2)
-                (->DevRank "c" 3)
-                (->DevRank "d" 5)
-                (->DevRank "e" 4)
-                (->DevRank "b" 1))
-        (fire-rules)))
+                (->DevRankList "Sarah" "John" "Jessie" "Evan" "Matt") 
+                (->DevRankList "Sarah" "John" "Jessie" "Matt" "Evan") 
+                (->DevRankList "John" "Jessie" "Sarah" "Evan" "Matt") 
+                )
+        (fire-rules)
+        ))
