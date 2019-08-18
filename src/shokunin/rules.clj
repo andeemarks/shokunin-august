@@ -2,6 +2,7 @@
   (:require [clara.rules :refer :all]))
 
 (defrecord DevRankList [dev1 dev2 dev3 dev4 dev5])
+(defrecord Match [match])
 
 (defn rank-for
     [dev-rank-list dev]
@@ -31,7 +32,11 @@
     [:test (< ?sarah_rank ?evan_rank)]
     [:test (<= 2 (gap-between ?matt_rank ?john_rank))]
     [:test (<= 2 (gap-between ?evan_rank ?john_rank))]
-    => (println "Found matching permutation in " ?match))
+    => (insert! (->Match ?match)))
+
+(defquery get-match
+    []
+    [?match <- Match])
 
 (defn -main
     [& args]
@@ -43,7 +48,7 @@
     ; Matt is not directly below or above John as a developer
     ; John is not directly below or above Evan as a developer        
 
-    (-> (mk-session 'shokunin.rules)
+    (let [session (-> (mk-session 'shokunin.rules)
         (insert 
                 (->DevRankList "Sarah","John","Jessie","Evan","Matt") ; winner!
                 (->DevRankList "John","Sarah","Jessie","Evan","Matt")
@@ -164,7 +169,7 @@
                 (->DevRankList "Matt","Jessie","John","Evan","Sarah")
                 (->DevRankList "Jessie","Matt","John","Evan","Sarah")
                 (->DevRankList "John","Matt","Jessie","Evan","Sarah")
-                (->DevRankList "Matt","John","Jessie","Evan","Sarah")
-                )
-        (fire-rules)
+                (->DevRankList "Matt","John","Jessie","Evan","Sarah"))
+        (fire-rules))]
+        (println (query session get-match))
         ))
