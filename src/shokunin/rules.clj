@@ -3,7 +3,7 @@
 
 (defprotocol Rankable 
     (rank-for [_ dev])
-    (gap-between [_ dev1 dev2])
+    (gap-between [_ from to])
     )
 
 (defrecord DevRankList [dev1 dev2 dev3 dev4 dev5] 
@@ -15,10 +15,10 @@
             (= dev3 dev) 3
             (= dev4 dev) 4
             (= dev5 dev) 5 ) )
-    (gap-between [_ dev1 dev2]
+    (gap-between [_ from to]
         (let 
-            [rank1 (rank-for _ dev1)
-                rank2 (rank-for _ dev2)]
+            [rank1 (rank-for _ from)
+                rank2 (rank-for _ to)]
                 (Math/abs (- rank1 rank2))))
     )
 
