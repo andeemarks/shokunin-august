@@ -3,7 +3,10 @@
 
 (defprotocol Rankable 
     (rank-for [_ dev])
+    (first? [_ dev])
+    (last? [_ dev])
     (gap-between [_ from to])
+    (better-than? [_ from to])
     )
 
 (defrecord DevRankList [dev1 dev2 dev3 dev4 dev5] 
@@ -15,6 +18,9 @@
             (= dev3 dev) 3
             (= dev4 dev) 4
             (= dev5 dev) 5 ) )
+    (first? [_ dev] (= 1 (rank-for _ dev)))
+    (last? [_ dev] (= 5 (rank-for _ dev)))
+    (better-than? [_ from to] (< (rank-for _ from) (rank-for _ to)))
     (gap-between [_ from to]
         (let 
             [rank1 (rank-for _ from)
@@ -25,15 +31,11 @@
 (defrecord Match [match])
 
 (defrule rules
-    [?match <- DevRankList (not (= dev1 "Jessie"))]
-    [?match <- DevRankList (not (= dev5 "Evan"))]
-    [?match <- DevRankList (not (= dev1 "John"))]
-    [?match <- DevRankList (not (= dev5 "John"))]
-    [?match <- DevRankList (= ?sarah_rank (rank-for ?match "Sarah"))]
-    [?match <- DevRankList (= ?evan_rank (rank-for ?match "Evan"))]
-    [?match <- DevRankList (= ?john_rank (rank-for ?match "John"))]
-    [?match <- DevRankList (= ?matt_rank (rank-for ?match "Matt"))]
-    [:test (< ?sarah_rank ?evan_rank)]
+    [?match <- DevRankList]
+    [?match <- DevRankList (not (first? ?match "Jessie"))]
+    [?match <- DevRankList (not (last? ?match "Evan"))]
+    [?match <- DevRankList (and (not (first? ?match "John")) (not (last? ?match "John")))]
+    [:test (better-than? ?match "Sarah" "Evan")]
     [:test (<= 2 (gap-between ?match "Matt" "John"))]
     [:test (<= 2 (gap-between ?match "Evan" "John"))]
     => (insert! (->Match ?match)))
