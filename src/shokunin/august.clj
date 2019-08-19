@@ -1,6 +1,5 @@
-(ns shokunin.rules
-    (:require 
-        [shokunin.facts :as facts]
+(ns shokunin.august
+    (:require [shokunin.facts :as facts]
         [clara.rules :refer :all]))
 
 (defprotocol Rankable 
@@ -20,34 +19,32 @@
     (neighbours?    [_ from to] (= 1 (gap-between _ from to)))
     (gap-between    [_ from to] (Math/abs (- (rank-for _ from) (rank-for _ to)))) )
 
-(defrecord Match [tenx-dev match])
+(defrecord Match [tenx-dev list])
+
+(defquery get-match [] [?match <- Match])
 
 (defrule rules
-    [?match <- DevRankList]
-    [?match <- DevRankList (not (first? ?match "Jessie"))]
-    [?match <- DevRankList (not (last? ?match "Evan"))]
-    [?match <- DevRankList (and (not (first? ?match "John")) (not (last? ?match "John")))]
-    [:test (better-than? ?match "Sarah" "Evan")]
-    [:test (not (neighbours? ?match "Matt" "John"))]
-    [:test (not (neighbours? ?match "Evan" "John"))]
-    => (insert! (->Match (first (:devs ?match)) (:devs ?match))))
-
-(defquery get-match []
-    [?match <- Match])
+    "
+    Jessie is not the best developer
+    Evan is not the worst developer
+    John is not the best developer or the worst developer
+    Sarah is a better developer than Evan
+    Matt is not directly below or above John as a developer
+    John is not directly below or above Evan as a developer
+    "
+    [?list <- DevRankList]
+    [?list <- DevRankList (not (first? ?list "Jessie"))]
+    [?list <- DevRankList (not (last? ?list "Evan"))]
+    [?list <- DevRankList (and (not (first? ?list "John")) (not (last? ?list "John")))]
+    [:test (better-than? ?list "Sarah" "Evan")]
+    [:test (not (neighbours? ?list "Matt" "John"))]
+    [:test (not (neighbours? ?list "Evan" "John"))]
+    => (insert! (->Match (first (:devs ?list)) (:devs ?list))))
 
 (defn -main
     [& args]
-
-    ; Jessie is not the best developer
-    ; Evan is not the worst developer
-    ; John is not the best developer or the worst developer
-    ; Sarah is a better developer than Evan
-    ; Matt is not directly below or above John as a developer
-    ; John is not directly below or above Evan as a developer        
-
-    (-> (mk-session 'shokunin.rules)
+    (-> (mk-session 'shokunin.august)
         (insert-all (map #(->DevRankList %) facts/all-facts))
         (fire-rules)
         (query get-match)
-        (println))
-    )
+        (println)) )
