@@ -20,7 +20,7 @@
     (let [gap (Math/abs (- rank-1 rank-2))]
         gap))
 
-(defrule all-the-rules
+(defrule rules
     [?match <- DevRankList (not (= dev1 "Jessie"))]
     [?match <- DevRankList (not (= dev5 "Evan"))]
     [?match <- DevRankList (not (= dev1 "John"))]
@@ -40,8 +40,8 @@
 
 (defn insert-facts
     [session]
-    (insert session
-        (->DevRankList "Sarah","John","Jessie","Evan","Matt") ; winner!
+    (insert-all session
+        [(->DevRankList "Sarah","John","Jessie","Evan","Matt") ; winner!
         (->DevRankList "John","Sarah","Jessie","Evan","Matt")
         (->DevRankList "Jessie","Sarah","John","Evan","Matt")
         (->DevRankList "Sarah","Jessie","John","Evan","Matt")
@@ -160,7 +160,7 @@
         (->DevRankList "Matt","Jessie","John","Evan","Sarah")
         (->DevRankList "Jessie","Matt","John","Evan","Sarah")
         (->DevRankList "John","Matt","Jessie","Evan","Sarah")
-        (->DevRankList "Matt","John","Jessie","Evan","Sarah")))
+        (->DevRankList "Matt","John","Jessie","Evan","Sarah")]))
 
 (defn -main
     [& args]
