@@ -2,13 +2,12 @@
     (:require [clara.rules :refer :all]))
 
 (defprotocol Rankable 
-    (rank-for [_ dev])
-    (first? [_ dev])
-    (last? [_ dev])
-    (gap-between [_ from to])
-    (better-than? [_ from to])
-    (neighbours? [_ from to])
-    )
+    (rank-for [_ dev] "Return the numeric rank for dev" )
+    (first? [_ dev] "Return true if dev is at rank 1")
+    (last? [_ dev] "Return true if dev rank is the lowest of all in list" )
+    (gap-between [_ from to] "Return the distance between from and to in terms of rank" )
+    (better-than? [_ from to] "Return true if from has a better/lower rank than to" )
+    (neighbours? [_ from to] "Return true if from and to are only separated by one level of rank" ) )
 
 (defrecord DevRankList [dev1 dev2 dev3 dev4 dev5] 
     Rankable
@@ -23,11 +22,7 @@
     (last? [_ dev] (= 5 (rank-for _ dev)))
     (better-than? [_ from to] (< (rank-for _ from) (rank-for _ to)))
     (neighbours? [_ from to] (= 1 (gap-between _ from to)))
-    (gap-between [_ from to]
-        (let 
-            [rank1 (rank-for _ from)
-                rank2 (rank-for _ to)]
-                (Math/abs (- rank1 rank2))))
+    (gap-between [_ from to] (Math/abs (- (rank-for _ from) (rank-for _ to))))
     )
 
 (defrecord Match [match])
