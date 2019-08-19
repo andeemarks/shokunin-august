@@ -172,8 +172,9 @@
     ; Matt is not directly below or above John as a developer
     ; John is not directly below or above Evan as a developer        
 
-    (let [session (-> (mk-session 'shokunin.rules)
+    (-> (mk-session 'shokunin.rules)
         (insert-facts)
-        (fire-rules))]
-        (println (query session get-match))
-        ))
+        (fire-rules)
+        (query get-match)
+        (println))
+    )
