@@ -1,24 +1,28 @@
 (ns shokunin.rules
-  (:require [clara.rules :refer :all]))
+    (:require [clara.rules :refer :all]))
 
-(defrecord DevRankList [dev1 dev2 dev3 dev4 dev5])
-(defrecord Match [match])
-
-(defn rank-for
-    [dev-rank-list dev]
-    (cond 
-        (= (:dev1 dev-rank-list) dev) 1
-        (= (:dev2 dev-rank-list) dev) 2
-        (= (:dev3 dev-rank-list) dev) 3
-        (= (:dev4 dev-rank-list) dev) 4
-        (= (:dev5 dev-rank-list) dev) 5
-        )
+(defprotocol Rankable 
+    (rank-for [_ dev])
+    (gap-between [_ dev1 dev2])
     )
 
-(defn gap-between
-    [rank-1 rank-2]
-    (let [gap (Math/abs (- rank-1 rank-2))]
-        gap))
+(defrecord DevRankList [dev1 dev2 dev3 dev4 dev5] 
+    Rankable
+    (rank-for [_ dev]
+        (cond 
+            (= dev1 dev) 1
+            (= dev2 dev) 2
+            (= dev3 dev) 3
+            (= dev4 dev) 4
+            (= dev5 dev) 5 ) )
+    (gap-between [_ dev1 dev2]
+        (let 
+            [rank1 (rank-for _ dev1)
+                rank2 (rank-for _ dev2)]
+                (Math/abs (- rank1 rank2))))
+    )
+
+(defrecord Match [match])
 
 (defrule rules
     [?match <- DevRankList (not (= dev1 "Jessie"))]
@@ -30,8 +34,8 @@
     [?match <- DevRankList (= ?john_rank (rank-for ?match "John"))]
     [?match <- DevRankList (= ?matt_rank (rank-for ?match "Matt"))]
     [:test (< ?sarah_rank ?evan_rank)]
-    [:test (<= 2 (gap-between ?matt_rank ?john_rank))]
-    [:test (<= 2 (gap-between ?evan_rank ?john_rank))]
+    [:test (<= 2 (gap-between ?match "Matt" "John"))]
+    [:test (<= 2 (gap-between ?match "Evan" "John"))]
     => (insert! (->Match ?match)))
 
 (defquery get-match
@@ -159,7 +163,7 @@
         (->DevRankList "Jessie","Matt","John","Evan","Sarah")
         (->DevRankList "John","Matt","Jessie","Evan","Sarah")
         (->DevRankList "Matt","John","Jessie","Evan","Sarah")])
-    
+
 (defn -main
     [& args]
 
