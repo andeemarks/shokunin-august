@@ -7,6 +7,7 @@
     (last? [_ dev])
     (gap-between [_ from to])
     (better-than? [_ from to])
+    (neighbours? [_ from to])
     )
 
 (defrecord DevRankList [dev1 dev2 dev3 dev4 dev5] 
@@ -21,6 +22,7 @@
     (first? [_ dev] (= 1 (rank-for _ dev)))
     (last? [_ dev] (= 5 (rank-for _ dev)))
     (better-than? [_ from to] (< (rank-for _ from) (rank-for _ to)))
+    (neighbours? [_ from to] (= 1 (gap-between _ from to)))
     (gap-between [_ from to]
         (let 
             [rank1 (rank-for _ from)
@@ -36,8 +38,8 @@
     [?match <- DevRankList (not (last? ?match "Evan"))]
     [?match <- DevRankList (and (not (first? ?match "John")) (not (last? ?match "John")))]
     [:test (better-than? ?match "Sarah" "Evan")]
-    [:test (<= 2 (gap-between ?match "Matt" "John"))]
-    [:test (<= 2 (gap-between ?match "Evan" "John"))]
+    [:test (not (neighbours? ?match "Matt" "John"))]
+    [:test (not (neighbours? ?match "Evan" "John"))]
     => (insert! (->Match ?match)))
 
 (defquery get-match
