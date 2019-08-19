@@ -11,15 +11,9 @@
 
 (defrecord DevRankList [devs] 
     Rankable
-    (rank-for [_ dev]
-        (cond 
-            (= (nth devs 0) dev) 1
-            (= (nth devs 1) dev) 2
-            (= (nth devs 2) dev) 3
-            (= (nth devs 3) dev) 4
-            (= (nth devs 4) dev) 5 ) )
+    (rank-for [_ dev] (+ 1 (.indexOf (:devs _) dev)))
     (first? [_ dev] (= 1 (rank-for _ dev)))
-    (last? [_ dev] (= 5 (rank-for _ dev)))
+    (last? [_ dev] (= (count (:devs _)) (rank-for _ dev)))
     (better-than? [_ from to] (< (rank-for _ from) (rank-for _ to)))
     (neighbours? [_ from to] (= 1 (gap-between _ from to)))
     (gap-between [_ from to] (Math/abs (- (rank-for _ from) (rank-for _ to))))
@@ -35,10 +29,9 @@
     [:test (better-than? ?match "Sarah" "Evan")]
     [:test (not (neighbours? ?match "Matt" "John"))]
     [:test (not (neighbours? ?match "Evan" "John"))]
-    => (insert! (->Match ?match)))
+    => (insert! (->Match (:devs ?match))))
 
-(defquery get-match
-    []
+(defquery get-match []
     [?match <- Match])
 
 (def facts [
