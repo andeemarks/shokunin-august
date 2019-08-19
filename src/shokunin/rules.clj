@@ -38,9 +38,7 @@
     []
     [?match <- Match])
 
-(defn insert-facts
-    [session]
-    (insert-all session
+(def facts
         [(->DevRankList "Sarah","John","Jessie","Evan","Matt") ; winner!
         (->DevRankList "John","Sarah","Jessie","Evan","Matt")
         (->DevRankList "Jessie","Sarah","John","Evan","Matt")
@@ -160,8 +158,8 @@
         (->DevRankList "Matt","Jessie","John","Evan","Sarah")
         (->DevRankList "Jessie","Matt","John","Evan","Sarah")
         (->DevRankList "John","Matt","Jessie","Evan","Sarah")
-        (->DevRankList "Matt","John","Jessie","Evan","Sarah")]))
-
+        (->DevRankList "Matt","John","Jessie","Evan","Sarah")])
+    
 (defn -main
     [& args]
 
@@ -173,7 +171,7 @@
     ; John is not directly below or above Evan as a developer        
 
     (-> (mk-session 'shokunin.rules)
-        (insert-facts)
+        (insert-all facts)
         (fire-rules)
         (query get-match)
         (println))
