@@ -20,7 +20,7 @@
     (neighbours?    [_ from to] (= 1 (gap-between _ from to)))
     (gap-between    [_ from to] (Math/abs (- (rank-for _ from) (rank-for _ to)))) )
 
-(defrecord Match [match])
+(defrecord Match [tenx-dev match])
 
 (defrule rules
     [?match <- DevRankList]
@@ -30,7 +30,7 @@
     [:test (better-than? ?match "Sarah" "Evan")]
     [:test (not (neighbours? ?match "Matt" "John"))]
     [:test (not (neighbours? ?match "Evan" "John"))]
-    => (insert! (->Match (:devs ?match))))
+    => (insert! (->Match (first (:devs ?match)) (:devs ?match))))
 
 (defquery get-match []
     [?match <- Match])
