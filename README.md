@@ -19,12 +19,12 @@ You need to write a solution to compute these answers:
 
 ## Prerequisite
 
-* [Clojure](https://clojure.org/guides/getting_started)
-* [Leiningen](https://leiningen.org/#install)
+* [Clojure](https://clojure.org/guides/getting_started) - developed using v1.10.1
+* [Leiningen](https://leiningen.org/#install) - developed using v2.8.1
 
 ## Usage
 
 ### Unix
 
 - Run the application: `./go`
-- Run the tests: `./go test`
+- Run the tests: `lein test`
