@@ -6,7 +6,11 @@
 
 (defrecord DevRankList [devs]
   Rankable
-  (rank-for       [_ dev]     (+ 1 (.indexOf (:devs _) dev)))
+  (rank-for       [_ dev]
+    (let [dev-index (.indexOf (:devs _) dev)]
+      (if (<= 0 dev-index)
+        (+ 1 dev-index)
+        (throw (IllegalArgumentException. (str dev " not found in list"))))))
   (first?         [_ dev]     (= 1 (rank-for _ dev)))
   (last?          [_ dev]     (= (count (:devs _)) (rank-for _ dev)))
   (better-than?   [_ from to] (< (rank-for _ from) (rank-for _ to)))
