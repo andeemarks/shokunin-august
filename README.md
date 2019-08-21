@@ -40,4 +40,4 @@ You need to write a solution to compute these answers:
 #### Usage
 
 - Run the application: `./go-docker`
-- Run the tests: `sudo docker run -it shokunin-august lein test`
+- Run the tests: `docker run -it shokunin-august lein test`
