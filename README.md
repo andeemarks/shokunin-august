@@ -17,14 +17,27 @@ You need to write a solution to compute these answers:
 1. Who is the 10x developer on the team?
 1. What is the correct ordering of the members of the team according to their coding skills?
 
-## Prerequisite
+## Usage
+
+### Option 1 - Local
+
+#### Prerequisites
 
 * [Clojure](https://clojure.org/guides/getting_started) - developed using v1.10.1
 * [Leiningen](https://leiningen.org/#install) - developed using v2.8.1
 
-## Usage
-
-### Unix
+#### Usage
 
 - Run the application: `./go`
 - Run the tests: `lein test`
+
+### Option 2 - Docker
+
+#### Prerequisites
+
+* [Docker](http://docker.io)
+
+#### Usage
+
+- Run the application: `./go-docker`
+- Run the tests: `sudo docker run -it shokunin-august lein test`

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+sudo docker build -t shokunin-august .
+sudo docker run -it shokunin-august
